@@ -1,16 +1,18 @@
 import gspread
-from oauth2client.service_account import ServiceAccountCredentials
+import streamlit as st
+from google.oauth2.service_account import Credentials
 from datetime import datetime
+
 
 def connect_sheet():
     scope = [
-        "https://spreadsheets.google.com/feeds",
+        "https://www.googleapis.com/auth/spreadsheets",
         "https://www.googleapis.com/auth/drive"
     ]
 
-    creds = ServiceAccountCredentials.from_json_keyfile_name(
-        "credentials.json",
-        scope
+    creds = Credentials.from_service_account_info(
+        st.secrets["gcp_service_account"],
+        scopes=scope
     )
 
     client = gspread.authorize(creds)
@@ -46,7 +48,6 @@ def save_to_google_sheets(data_dict):
         data_dict["MR_acc"],
         data_dict["MR_reaction"],
         data_dict["MR_Timed-out"],
-        
     ]
 
     sheet.append_row(row)
