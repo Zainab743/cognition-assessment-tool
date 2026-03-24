@@ -284,6 +284,4 @@ def run_mental_rotation_test():
         if st.button("Option B", key=f"mrt_b_{st.session_state.mrt_question}"):
             handle_answer(options[1])
 
-    # Smooth refresh without blocking
-    time.sleep(0.05)
-    st.rerun()
+    
