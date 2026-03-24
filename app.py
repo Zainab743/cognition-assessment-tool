@@ -36,64 +36,83 @@ if st.session_state.current_stage == "consent":
     st.markdown("""
     ### Digital Consent
 
-    - I confirm that I have passed 12th standard.
-    - I confirm that I am computer literate.
-    - I understand that the data collected will be used **only for academic purposes**.
-    - My participation is voluntary and I may withdraw at any time.
+    - This assessment is conducted solely for academic research purposes.
+    - The data collected will be used only for analysis and study related to cognitive performance.
+    - No personally identifiable information will be shared with third parties.
+    - Your responses will remain confidential and anonymous.
+    - Participation in this assessment is voluntary.
+    - You may choose to exit the test at any time without any consequences.
     """)
 
-    consent = st.checkbox("I agree to participate")
+    st.subheader("Eligibility Confirmation")
 
-    st.markdown("---")
+    c1 = st.checkbox("I confirm that I have passed 12th standard.")
+    c2 = st.checkbox("I confirm that I am computer literate and can operate a computer independently.")
+    consent = st.checkbox("I agree to participate and allow my data to be used for academic research purposes.")
+
+    if c1 and c2 and consent:
+        if st.button("Start Test", key="start_test_btn"):
+            st.session_state.current_stage = "demographics"
+            st.rerun()
+    else:
+        st.warning("Please confirm all the above statements to continue.")
+
+    
+
+if st.session_state.current_stage == "demographics":
+
     st.markdown("### Baseline & Demographic Information")
 
-    name = st.text_input("Name")
-    age = st.selectbox("Age Category", ["18-25", "26-35", "36-45", "46-55", "56+"])
-    gender = st.selectbox("Gender", ["Male", "Female", "Other"])
-    hometown = st.text_input("Home Town")
-    current_city = st.text_input("Current City")
+    name = st.text_input("Name", key="name")
+    age = st.selectbox("Age Category", ["18-25", "26-35", "36-45", "46-55", "56+"], key="age")
+    gender = st.selectbox("Gender", ["Male", "Female", "Other"], key="gender")
+    hometown = st.text_input("Home Town", key="hometown")
+    current_city = st.text_input("Current City", key="current_city")
 
     mother_language = st.selectbox(
         "Mother Language",
         ["Hindi", "English", "Bengali", "Tamil", "Telugu",
-         "Marathi", "Gujarati", "Kannada", "Malayalam", "Other"]
+        "Marathi", "Gujarati", "Kannada", "Malayalam", "Other"],
+        key="mother_language"
     )
 
     academic = st.selectbox(
         "Academic Qualification",
-        ["Pursuing UG", "Pursuing PG", "Completed UG", "Completed PG"]
+        ["Pursuing UG", "Pursuing PG", "Completed UG", "Completed PG"],
+        key="academic"
     )
 
     service = st.selectbox(
         "Service Status",
-        ["Employed", "Not Employed", "Retired"]
+        ["Employed", "Not Employed", "Retired"],
+        key="service"
     )
 
     handedness = st.selectbox(
         "Handedness",
-        ["Right", "Left", "Ambidextrous"]
-    )
+        ["Right", "Left", "Ambidextrous"],
+    key="handedness"
+        )
 
     device = st.selectbox(
         "Device Used",
-        ["Laptop", "Desktop", "Mobile", "Tablet"]
+        ["Laptop", "Desktop", "Mobile", "Tablet"],
+        key="device"
     )
 
     vision = st.selectbox(
         "Vision Status",
-        ["Normal", "Corrected to Normal"]
+        ["Normal", "Corrected to Normal"],
+        key="vision"
     )
 
     prior_exposure = st.selectbox(
         "Prior exposure to any cognitive test recently?",
-        ["Yes", "No"]
+        ["Yes", "No"],
+        key="prior_exposure"
     )
 
-    if st.button("Start Test"):
-
-        if not consent:
-            st.warning("You must provide consent to proceed.")
-            st.stop()
+    if st.button("Continue", key="demo_continue_btn"):
 
         if name.strip() == "":
             st.warning("Please enter your name.")
@@ -114,9 +133,7 @@ if st.session_state.current_stage == "consent":
             "prior_exposure": prior_exposure
         }
 
-        st.session_state.stage_lock = False
         st.session_state.current_stage = "instructions"
-
         st.rerun()
 
 
@@ -129,15 +146,31 @@ elif st.session_state.current_stage == "instructions":
     st.title("Instructions")
 
     st.markdown("""
-    You will complete **three cognitive tasks**:
+    You will complete **three cognitive tasks** as part of this assessment:
 
-    1. Math Speed Test  
-    2. Stroop Test  
-    3. Mental Rotation Task  
+    ### 🧠 Tasks Included
+    1. **Numerical Ability Test** 
+    2. **Stroop Test** 
+    3. **Mental Rotation Task**
 
-    Respond quickly and accurately.
+    ---
 
-    Click the button below to begin the assessment.
+    ### ⏱️ Guidelines
+    - Respond **as quickly and accurately as possible**.  
+    - Each task is **time-sensitive**, so avoid delays.  
+    - Read each question carefully before answering.
+    - Do not use any external aids (calculators, pen, paper, etc.) during the test.
+
+    ---
+
+    ### ⚠️ Important Notes
+    - Ensure you are in a **quiet and distraction-free environment**.  
+    - Do not refresh or close the browser during the test.  
+    - Once started, the test should be completed in one session.  
+
+    ---
+
+    Click the button below when you are ready to begin.
     """)
 
     if st.button("Continue to Test"):
@@ -210,6 +243,8 @@ elif st.session_state.current_stage == "final":
         "MR_acc": st.session_state.get("mrt_acc", 0),
         "MR_reaction": st.session_state.get("mrt_reaction", 0),
         "MR_Timed-out": st.session_state.get("mrt_timeout", 0),
+        "MR_spatial_score": st.session_state.get("mrt_score", 0),
+        "MR_high_angle_accuracy": st.session_state.get("mrt_high_angle_acc", 0),
     }
 
     # Save to Google Sheets

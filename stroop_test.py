@@ -67,7 +67,7 @@ def next_question():
 
 def run_stroop_test():
 
-    st.title("🧠 Stroop Color–Word Test")
+    st.title("🧠 Stroop Test")
 
     # -------- SESSION INIT --------
 
@@ -88,12 +88,28 @@ def run_stroop_test():
     if not st.session_state.stroop_started:
 
         st.subheader("📋 Instructions")
-        st.write("""
-- Select the COLOR of the text, not the word.
-- Some words may not represent colors.
-- Each question has 5 seconds.
-- Total questions: 42
-""")
+        st.markdown("""
+
+            In this task, you will see words displayed in different colors.
+
+            - Identify the **COLOR of the text**, not the word itself.
+            - Total **42 questions**  
+            - Each question is shown for **5 seconds**  
+            - Includes both **congruent** and **incongruent** trials  
+
+            ### ⚖️ Guidance
+            - Focus only on the **text color**  
+            - Respond **quickly and accurately**  
+
+            ### 🧩 Cognitive Domains Assessed
+            - **Selective Attention**  
+            - **Cognitive Control (Inhibitory Control)**  
+            - **Processing Speed**
+
+            ---
+
+            Click below when you are ready to begin.
+        """)
 
         if st.button("▶️ Start Test"):
 
@@ -144,8 +160,8 @@ def run_stroop_test():
         col1, col2, col3 = st.columns(3)
 
         col1.metric("Error Rate (%)", f"{error_rate:.2f}")
-        col2.metric("Mean RT (Correct Only) (s)", f"{mean_rt:.2f}" if pd.notna(mean_rt) else "N/A")
-        col3.metric("Stroop Interference (s)", f"{stroop_effect:.2f}" if stroop_effect is not None else "N/A")
+        col2.metric("Mean RT (Correct Only) (seconds)", f"{mean_rt:.2f}" if pd.notna(mean_rt) else "N/A")
+        col3.metric("Stroop Interference (seconds)", f"{stroop_effect:.2f}" if stroop_effect is not None else "N/A")
 
         st.subheader("📋 Detailed Responses")
         st.dataframe(df, use_container_width=True)

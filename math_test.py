@@ -92,7 +92,7 @@ def generate_math_questions(num=QUESTION_POOL_SIZE):
 
 def run_math_test():
 
-    st.title("Numerical Ability Cognitive Test")
+    st.title("Numerical Ability Test")
 
     # ---------- SESSION INITIALIZATION ----------
 
@@ -128,7 +128,25 @@ def run_math_test():
 
     if not st.session_state.test_started:
 
-        st.write("You will have **5 minutes** to solve as many questions as possible.")
+        st.markdown("""
+        In this task, you will be presented with a series of simple numerical problems. 
+        - You will have **5 minutes** to solve as many questions as possible.
+        - You can skip any question by leaving the answer blank and pressing Enter.
+        - Once submitted, you will **not be able to return** to previous questions.
+
+        ### ⚖️ Guidance
+        - Maintain a balance between **speed and accuracy**  
+        - Avoid spending too much time on a single question  
+
+        ### 🧩 Cognitive Domains Assessed
+        - **Numerical Reasoning**  
+        - **Working Memory**  
+        - **Processing Speed**
+
+        ---
+
+        Click below when you are ready to begin.
+        """)
 
         if st.button("Start Test"):
 
@@ -213,6 +231,7 @@ def run_math_test():
 
     # ---------- QUESTION DISPLAY ----------
 
+    message_placeholder = st.empty()
     idx = min(
         st.session_state.current_question_index,
         len(st.session_state.questions) - 1
@@ -249,8 +268,12 @@ def run_math_test():
                 if numeric_answer == correct_answer:
                     st.session_state.difficulty_stats[f"{level}_correct"] += 1
 
-            except:
-                pass
+            except ValueError:
+                    message_placeholder.warning(
+                        "Invalid input. Please enter a valid integer or press Enter to skip."
+                    )
+                    time.sleep(2)
+                    message_placeholder.empty()
 
         st.session_state.current_question_index += 1
         st.rerun()
