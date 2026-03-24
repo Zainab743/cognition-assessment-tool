@@ -68,7 +68,30 @@ def run_mental_rotation_test():
         - Select the option that is the **correct rotated version** of the reference image.
         - There are 15 questions in total.
         - There will be a time limit of **15 seconds** for each question.
+        - ⚡ Try to respond **as quickly and accurately as possible**.
 
+        ### 🧪 Sample Question Format
+        """)
+        sample_target = "images/s1.png"
+        sample_option_a = "images/s2.png"
+        sample_option_b = "images/s3.png"
+
+        # Center the reference image
+        col1, col2, col3 = st.columns([1,2,1])
+        with col2:
+            st.image(sample_target, caption="Reference Image", width=150)
+
+        # Show options side by side
+        colA, colB = st.columns(2)
+
+        with colA:
+            st.image(sample_option_a, caption="Option A", width=130)
+
+        with colB:
+            st.image(sample_option_b, caption="Option B", width=130)
+
+        st.markdown("""
+        👉 Choose the option that matches the reference image after rotation.
         ### ⚖️ Guidance
         - Focus on **shape**, not orientation  
         - Only one option is correct  
@@ -261,6 +284,4 @@ def run_mental_rotation_test():
         if st.button("Option B", key=f"mrt_b_{st.session_state.mrt_question}"):
             handle_answer(options[1])
 
-    # Smooth refresh without blocking
-    time.sleep(0.05)
-    st.rerun()
+    

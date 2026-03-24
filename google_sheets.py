@@ -48,6 +48,8 @@ def save_to_google_sheets(data_dict):
         data_dict["MR_acc"],
         data_dict["MR_reaction"],
         data_dict["MR_Timed-out"],
+        data_dict["MR_spatial_score"],
+        data_dict["MR_high_angle_accuracy"],
     ]
 
     sheet.append_row(row)
