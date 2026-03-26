@@ -106,13 +106,11 @@ def run_mental_rotation_test():
 
         st.markdown("---")
 
-
         if st.button("Start Mental Rotation Test", key="start_mrt"):
             st.session_state.mrt_started = True
             st.rerun()
 
         return
-
 
 
     if "mrt_initialized" not in st.session_state:
@@ -124,14 +122,14 @@ def run_mental_rotation_test():
         )
         st.session_state.mrt_question_start = None
         st.session_state.mrt_options = None
-
+        st.session_state.current_angle = 0
 
 
     # ---------- COMPLETION ----------
 
     if st.session_state.mrt_question >= TOTAL_QUESTIONS:
 
-        st.session_state.mrt_started = False
+        
 
         results = st.session_state.mrt_results
 
@@ -210,7 +208,7 @@ def run_mental_rotation_test():
 
             # Clean MRT session keys
             for key in list(st.session_state.keys()):
-                if key.startswith("mrt_") and key not in ["mrt_acc", "mrt_reaction", "mrt_timeout"]:
+                if key.startswith("mrt_") and key not in ["mrt_acc", "mrt_reaction", "mrt_timeout", "mrt_score", "mrt_high_angle_acc"]:
                     del st.session_state[key]
 
             st.session_state.current_stage = "final"
@@ -220,14 +218,15 @@ def run_mental_rotation_test():
 
     # ---------- QUESTION PHASE ----------
 
+    # Initialize timer for new question
     if st.session_state.mrt_question_start is None:
         st.session_state.mrt_question_start = time.time()
 
     elapsed = time.time() - st.session_state.mrt_question_start
     remaining = max(0.0, QUESTION_TIME_LIMIT - elapsed)
 
-    # Auto timeout
-    if elapsed >= QUESTION_TIME_LIMIT:
+    # AUTO-TIMEOUT: Check if time expired
+    if remaining <= 0:
         st.session_state.mrt_results.append({
             "correct": False,
             "time": QUESTION_TIME_LIMIT,
@@ -238,12 +237,17 @@ def run_mental_rotation_test():
         st.session_state.mrt_question_start = None
         st.session_state.mrt_options = None
         st.rerun()
+        return
 
     # ---------- UI ----------
 
     st.markdown(
         f"**Question {st.session_state.mrt_question + 1} of {TOTAL_QUESTIONS}**"
     )
+
+    # Display timer with color coding
+    timer_color = "🔴" if remaining < 5 else "🟡" if remaining < 10 else "🟢"
+    st.markdown(f"### {timer_color} Time Remaining: {remaining:.1f}s")
 
     st.progress(remaining / QUESTION_TIME_LIMIT, text=f"⏳ {remaining:.1f}s left")
 
@@ -284,4 +288,9 @@ def run_mental_rotation_test():
         if st.button("Option B", key=f"mrt_b_{st.session_state.mrt_question}"):
             handle_answer(options[1])
 
-    
+    # Auto-refresh every 100ms (Streamlit native approach)
+    st.write("")
+
+    if st.session_state.mrt_question < TOTAL_QUESTIONS:
+        time.sleep(0.1)
+        st.rerun()
