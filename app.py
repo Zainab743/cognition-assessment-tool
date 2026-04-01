@@ -202,6 +202,7 @@ elif st.session_state.current_stage == "mental":
 elif st.session_state.current_stage == "final":
 
     st.title("Thank You for Participating!")
+
         # -------------------------------
     # 🎯 NORMALIZE SCORES (OUT OF 100)
     # -------------------------------
@@ -277,6 +278,7 @@ elif st.session_state.current_stage == "final":
     st.markdown(f"**Can Improve:** {weakness}")
 
     st.markdown("---")
+
 
     # Generate participant ID
     participant_id = str(uuid.uuid4())
